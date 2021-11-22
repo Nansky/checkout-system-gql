@@ -20,6 +20,7 @@ There are 3 features that have been made :
 - clone the source code from this repo
 - Install Redis if you dont set it up, Run it
 - Run The following commands
+
  ```sh
 ./checkout-system-gql
 or 
@@ -101,7 +102,10 @@ mutation {
   }
 }
 ```
-And the result will be like this 
+based on this below cases, 
+![testcases](https://i.postimg.cc/3WQwXZQH/Screen-Shot-2021-11-22-at-16-41-54.png)
+
+if we apply it on this mutation, the result will be like this 
 ```
 {
   "data": {
