@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func getMacbookPromotion(name string, price float64, quantity int) (resp structs.ResponseCheckout) {
+func GetMacbookPromotion(name string, price float64, quantity int) (resp structs.ResponseCheckout) {
 	var scanned []string
 	priceStr := fmt.Sprintf("$%.2f", price*float64(quantity))
 
@@ -22,7 +22,7 @@ func getMacbookPromotion(name string, price float64, quantity int) (resp structs
 	return resp
 }
 
-func getGoogleHomePromotion(name string, price float64, quantity int) (resp structs.ResponseCheckout) {
+func GetGoogleHomePromotion(name string, price float64, quantity int) (resp structs.ResponseCheckout) {
 	var scanned []string
 
 	quantityDiv, quantityMod := (quantity/3)*2, quantity%3
@@ -42,7 +42,7 @@ func getGoogleHomePromotion(name string, price float64, quantity int) (resp stru
 	return resp
 }
 
-func getAlexaSpeakerPromotion(name string, price float64, quantity int) (resp structs.ResponseCheckout) {
+func GetAlexaSpeakerPromotion(name string, price float64, quantity int) (resp structs.ResponseCheckout) {
 	var scanned []string
 
 	if quantity > 3 {

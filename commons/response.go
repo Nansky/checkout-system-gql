@@ -36,11 +36,11 @@ func GetPromotionResponse(itemList []structs.ItemsList) interface{} {
 		if s.Sku != RaspberryPi {
 			switch s.Sku {
 			case MacbookProSku:
-				res = getMacbookPromotion(s.Name, price, s.Quantity)
+				res = GetMacbookPromotion(s.Name, price, s.Quantity)
 			case GoogleHome:
-				res = getGoogleHomePromotion(s.Name, price, s.Quantity)
+				res = GetGoogleHomePromotion(s.Name, price, s.Quantity)
 			case AlexaSpeaker:
-				res = getAlexaSpeakerPromotion(s.Name, price, s.Quantity)
+				res = GetAlexaSpeakerPromotion(s.Name, price, s.Quantity)
 			}
 		} else {
 			res = getRaspberryResponse(s.Name, price, s.Quantity)
