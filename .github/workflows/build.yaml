@@ -13,6 +13,14 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: 1.x
+      
+      - name: Cache Go modules
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
 
       - name: Build App
         run: go build -v
