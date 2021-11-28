@@ -3,3 +3,22 @@ on:
   push:
     branches:
       - master
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.x
+
+      - name: Build App
+        run: go build -v
+      
+      - name: Run Unit tests
+        id: unit-test
+        run: |
+          go test -race -covermode=atomic -coverprofile=coverage-reports.out ./...
+          echo "::set-output name=totalcoverage::$(go tool cover -func coverage-reports.out | grep total | awk '{print substr($3, 1, length($3)-1)}')"

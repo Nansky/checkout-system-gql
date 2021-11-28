@@ -27,6 +27,14 @@ type DeleteItemsResolversTestCase struct {
 	expectedError error
 }
 
+type CheckoutItemResolverTestCase struct {
+	caseName    string
+	params      graphql.ResolveParams
+	itemsList   []structs.ItemsList
+	expectedRes []structs.ResponseCheckout
+	expectedErr error
+}
+
 func TestGetItemResolver(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
@@ -218,5 +226,91 @@ func TestAddItemsResolver(t *testing.T) {
 		assert.Equal(t, tc.expectedError, err)
 
 		fmt.Println("Resolvers Test | Delete Items on Testcase:", in+1, " test case name:", tc.caseName)
+	}
+}
+
+func TestCheckoutResolver(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	mockCtrl.Finish()
+
+	testcase := []CheckoutItemResolverTestCase{
+		{
+			caseName: "Test checkout with items on cart",
+			params: graphql.ResolveParams{
+				Args: map[string]interface{}{
+					"buyerId": "212",
+				},
+			},
+			itemsList: []structs.ItemsList{
+				{
+					BuyerID:  "212",
+					Name:     "Raspberry Pi B",
+					Price:    "30.00",
+					Quantity: 1,
+					Sku:      "234234",
+				},
+				{
+					BuyerID:  "212",
+					Name:     "Google Home",
+					Sku:      "120P90",
+					Price:    "49.99",
+					Quantity: 2,
+				},
+				{
+					BuyerID:  "212",
+					Name:     "Alexa Speaker",
+					Price:    "109.50",
+					Quantity: 1,
+					Sku:      "A304SD",
+				},
+			},
+			expectedRes: []structs.ResponseCheckout{
+				{
+					Desc:  "Scanned Items: Raspberry Pi B",
+					Total: "$30.00",
+				},
+				{
+					Desc:  "Scanned Items: Google Home, Google Home",
+					Total: "$99.98",
+				},
+				{
+					Desc:  "Scanned Items: Alexa Speaker",
+					Total: "$109.50",
+				},
+			},
+			expectedErr: nil,
+		},
+		{
+			caseName: "Test Empty Checkout data with no items on cart",
+			params: graphql.ResolveParams{
+				Args: map[string]interface{}{
+					"buyerId": "6969",
+				},
+			},
+			itemsList:   []structs.ItemsList{},
+			expectedRes: []structs.ResponseCheckout{},
+			expectedErr: nil,
+		},
+	}
+
+	mockCheckoutRepo := mocks.NewMockICheckoutRepositories(mockCtrl)
+	resolvers := services.NewCheckoutServices(mockCheckoutRepo)
+
+	for in, tc := range testcase {
+		mockCheckoutRepo.EXPECT().
+			RetrieveItems(tc.params.Args["buyerId"]).
+			Return(tc.itemsList, tc.expectedErr).
+			AnyTimes()
+
+		mockCheckoutRepo.EXPECT().
+			DeleteItemsByBuyerID(tc.params.Args["buyerId"]).
+			Return(tc.expectedErr).
+			AnyTimes()
+
+		res, err := resolvers.CheckoutItemsResolver(tc.params)
+		assert.Equal(t, tc.expectedErr, err)
+		assert.Equal(t, tc.expectedRes, res)
+
+		fmt.Println("Resolvers Test | Checkout Items on Testcase:", in+1, " test case name:", tc.caseName)
 	}
 }

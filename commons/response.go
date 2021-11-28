@@ -23,7 +23,6 @@ func AddToCartResponse(itemList structs.ItemsList) interface{} {
 		Total: itemList.Quantity,
 		Price: priceStr,
 	}
-
 }
 
 func GetPromotionResponse(itemList []structs.ItemsList) interface{} {
